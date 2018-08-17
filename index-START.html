@@ -7,6 +7,57 @@
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
 <script>
+  const canvas = document.querySelector("#draw");
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+
+  ctx.strokeStyle="#BADA55";
+  ctx.lineCap="round";
+  ctx.lineJoin="round";
+  ctx.lineWidth= 100;
+
+  let isDrawing = false;
+  //you need starting x and y and ending x and y
+  let lastX = 0;
+  let lastY = 0;
+  let hue = 0;
+  let direction = true;
+
+  function draw(e){
+    //wont run function if they aren't moused down
+    if(!isDrawing) return;
+    ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+    ctx.beginPath();
+    //start from
+    ctx.moveTo(lastX,lastY);
+    //go to
+    ctx.lineTo(e.offsetX,e.offsetY);
+    ctx.stroke();
+    lastX = e.offsetX;
+    lastY = e.offsetY;
+    hue++;
+    if (ctx.lineWidth >= 100 || ctx.lineWidth <=1){
+      direction = !direction;
+    }
+    if (direction){
+      ctx.lineWidth++;
+    } else {
+      ctx.lineWidth--;
+    }
+  }
+
+  canvas.addEventListener("mousedown", (e) => {
+    isDrawing= true;
+    //set two variables at once
+    [lastX, lastY] = [e.offsetX, e.offsetY];
+  });
+
+  canvas.addEventListener("mousemove", draw);
+  canvas.addEventListener("mouseup", () => isDrawing= false);
+  canvas.addEventListener("mouseout", () => isDrawing= false);
+
 </script>
 
 <style>
